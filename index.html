@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ball & Doggett ESG Dashboard</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/recharts@2.5.0/dist/Recharts.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #f3f4f6; }
+        .min-h-screen { min-height: 100vh; }
+        .bg-gray-100 { background-color: #f3f4f6; }
+        .p-6 { padding: 1.5rem; }
+        .max-w-7xl { max-width: 80rem; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        .bg-gradient-to-r { background-image: linear-gradient(to right, var(--tw-gradient-stops)); }
+        .from-blue-600 { --tw-gradient-from: #2563eb; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(37, 99, 235, 0)); }
+        .to-green-600 { --tw-gradient-to: #10b981; }
+        .text-white { color: #ffffff; }
+        .p-8 { padding: 2rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .shadow { box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-3 { margin-bottom: 0.75rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mt-1 { margin-top: 0.25rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .items-start { align-items: flex-start; }
+        .items-end { align-items: flex-end; }
+        .justify-between { justify-content: space-between; }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .gap-6 { gap: 1.5rem; }
+        .space-y-3 > * + * { margin-top: 0.75rem; }
+        .space-y-6 > * + * { margin-top: 1.5rem; }
+        .grid { display: grid; }
+        .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+        .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+        .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+        .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+        .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+        .text-xs { font-size: 0.75rem; line-height: 1rem; }
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+        .font-medium { font-weight: 500; }
+        .opacity-90 { opacity: 0.9; }
+        .opacity-75 { opacity: 0.75; }
+        .opacity-70 { opacity: 0.7; }
+        .opacity-60 { opacity: 0.6; }
+        .opacity-40 { opacity: 0.4; }
+        .bg-white { background-color: #ffffff; }
+        .bg-blue-50 { background-color: #eff6ff; }
+        .bg-blue-600 { background-color: #2563eb; }
+        .bg-green-50 { background-color: #f0fdf4; }
+        .bg-orange-50 { background-color: #fff7ed; }
+        .bg-red-50 { background-color: #fef2f2; }
+        .bg-gray-50 { background-color: #f9fafb; }
+        .bg-gray-100 { background-color: #f3f4f6; }
+        .bg-gray-200 { background-color: #e5e7eb; }
+        .text-blue-700 { color: #1d4ed8; }
+        .text-blue-800 { color: #1e40af; }
+        .text-green-600 { color: #16a34a; }
+        .text-green-700 { color: #15803d; }
+        .text-green-800 { color: #166534; }
+        .text-orange-600 { color: #ea580c; }
+        .text-orange-700 { color: #c2410c; }
+        .text-orange-800 { color: #9a3412; }
+        .text-purple-600 { color: #9333ea; }
+        .text-purple-800 { color: #6b21a8; }
+        .text-red-600 { color: #dc2626; }
+        .text-gray-600 { color: #4b5563; }
+        .text-gray-700 { color: #374151; }
+        .border-2 { border-width: 2px; }
+        .border-l-4 { border-left-width: 4px; }
+        .border-b { border-bottom-width: 1px; }
+        .border-b-4 { border-bottom-width: 4px; }
+        .border-blue-200 { border-color: #bfdbfe; }
+        .border-blue-500 { border-color: #3b82f6; }
+        .border-blue-700 { border-color: #1d4ed8; }
+        .border-green-200 { border-color: #bbf7d0; }
+        .border-orange-200 { border-color: #fed7aa; }
+        .border-orange-500 { border-color: #f97316; }
+        .border-red-200 { border-color: #fecaca; }
+        .border-red-500 { border-color: #ef4444; }
+        .border-gray-200 { border-color: #e5e7eb; }
+        .p-3 { padding: 0.75rem; }
+        .p-4 { padding: 1rem; }
+        .p-6 { padding: 1.5rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+        .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+        .pr-2 { padding-right: 0.5rem; }
+        .rounded { border-radius: 0.25rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .rounded-r { border-top-right-radius: 0.25rem; border-bottom-right-radius: 0.25rem; }
+        .rounded-full { border-radius: 9999px; }
+        .w-full { width: 100%; }
+        .w-8 { width: 2rem; }
+        .w-4 { width: 1rem; }
+        .h-8 { height: 2rem; }
+        .h-4 { height: 1rem; }
+        .flex-1 { flex: 1 1 0%; }
+        .flex-shrink-0 { flex-shrink: 0; }
+        .cursor-pointer { cursor: pointer; }
+        .transition { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+        .hover\:bg-gray-50:hover { background-color: #f9fafb; }
+        .hover\:shadow-md:hover { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+        .uppercase { text-transform: uppercase; }
+        .tracking-wider { letter-spacing: 0.05em; }
+        .overflow-hidden { overflow: hidden; }
+        button { background: none; border: none; cursor: pointer; }
+        
+        @media (min-width: 768px) {
+            .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .md\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+        const { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } = Recharts;
+
+        const ESGDashboard = () => {
+            const [activeTab, setActiveTab] = useState('summary');
+
+            // Data
+            const certificationData = [
+                { name: 'FSC', value: 60 },
+                { name: 'PEFC', value: 12 },
+                { name: 'Recycled', value: 14 },
+                { name: 'Non-Certified', value: 14 }
+            ];
+
+            const categoryBreakdown = [
+                { category: 'Copy Paper', FSC: 65, PEFC: 15, Recycled: 15, Other: 5 },
+                { category: 'Notebooks', FSC: 70, PEFC: 10, Recycled: 12, Other: 8 },
+                { category: 'Packaging', FSC: 45, PEFC: 20, Recycled: 20, Other: 15 },
+                { category: 'Specialty', FSC: 55, PEFC: 8, Recycled: 10, Other: 27 }
+            ];
+
+            const certificationTrend = [
+                { year: 2022, certified: 80, target: 85 },
+                { year: 2023, certified: 83, target: 88 },
+                { year: 2024, certified: 86, target: 90 },
+                { year: 2025, certified: 90, target: 95 },
+                { year: 2026, certified: 92, target: 95 },
+                { year: 2027, certified: 95, target: 98 },
+                { year: 2028, certified: 97, target: 99 },
+                { year: 2029, certified: 99, target: 100 },
+                { year: 2030, certified: 100, target: 100 }
+            ];
+
+            const emissionsData = [
+                { year: 2022, actual: 2200, target: 2200 },
+                { year: 2023, actual: 1950, target: 2090 },
+                { year: 2024, actual: 1870, target: 1980 },
+                { year: 2025, actual: 1716, target: 1870 },
+                { year: 2026, actual: 1672, target: 1760 },
+                { year: 2027, actual: 1628, target: 1650 },
+                { year: 2028, actual: 1584, target: 1584 },
+                { year: 2029, actual: 1562, target: 1540 },
+                { year: 2030, actual: 1540, target: 1540 }
+            ];
+
+            const supplierData = [
+                { supplier: 'Hansol Paper', country: 'Korea', skus: 450, certified: 95, fscExpiry: '2025-12-31', risk: 'Low', spend: 64.5 },
+                { supplier: 'UPM', country: 'Finland', skus: 380, certified: 98, fscExpiry: '2026-03-20', risk: 'Low', spend: 62.2 },
+                { supplier: 'Japan Pulp & Paper', country: 'Japan', skus: 290, certified: 92, fscExpiry: '2025-08-15', risk: 'Medium', spend: 22.8 },
+                { supplier: 'APRIL', country: 'Singapore', skus: 340, certified: 88, fscExpiry: '2025-06-30', risk: 'Medium', spend: 20.7 },
+                { supplier: 'Yenom', country: 'Singapore', skus: 210, certified: 90, fscExpiry: '2026-01-10', risk: 'Low', spend: 18.8 },
+                { supplier: 'Mondi', country: 'Austria', skus: 180, certified: 100, fscExpiry: '2026-07-22', risk: 'Low', spend: 12.6 },
+                { supplier: 'Hankuk Paper', country: 'Korea', skus: 220, certified: 85, fscExpiry: '2025-05-18', risk: 'High', spend: 15.4 }
+            ];
+
+            const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444'];
+
+            const KPICard = ({ title, value, subtitle, color = 'blue' }) => {
+                const colorMap = {
+                    blue: 'bg-blue-50 text-blue-700 border-blue-200',
+                    green: 'bg-green-50 text-green-700 border-green-200',
+                    orange: 'bg-orange-50 text-orange-700 border-orange-200',
+                    red: 'bg-red-50 text-red-700 border-red-200'
+                };
+
+                return (
+                    <div className={`p-4 rounded-lg border-2 ${colorMap[color]}`}>
+                        <p className="text-sm font-medium opacity-70">{title}</p>
+                        <p className="text-3xl font-bold mt-1">{value}</p>
+                        {subtitle && <p className="text-xs mt-1 opacity-60">{subtitle}</p>}
+                    </div>
+                );
+            };
+
+            const GoalBadge = ({ text }) => (
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-3 mb-4 rounded-r">
+                    <p className="text-sm text-gray-700">
+                        <span className="font-semibold text-blue-700">Goal:</span> {text}
+                    </p>
+                </div>
+            );
+
+            return (
+                <div className="min-h-screen bg-gray-100 p-6">
+                    <div className="max-w-7xl mx-auto">
+                        {/* Header */}
+                        <div className="bg-gradient-to-r from-blue-600 to-green-600 text-white p-8 rounded-lg shadow-lg mb-6">
+                            <div className="flex items-center justify-between">
+                                <div className="flex-1">
+                                    <h1 className="text-4xl font-bold mb-2">Ball & Doggett ESG Dashboard</h1>
+                                    <p className="text-lg opacity-90">SUSTAIN: 2030 and Beyond</p>
+                                    <p className="text-sm mt-2 opacity-75">Tracking progress across 9 strategic ESG targets</p>
+                                </div>
+                                <div className="text-right px-6 py-4 rounded-lg" style={{background: 'rgba(255,255,255,0.1)'}}>
+                                    <p className="text-xs opacity-75 uppercase tracking-wider">Report Date</p>
+                                    <p className="text-2xl font-bold mt-1">January 2026</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Tabs */}
+                        <div className="bg-white rounded-lg shadow mb-6">
+                            <div className="flex border-b">
+                                <button onClick={() => setActiveTab('summary')} className={`flex-1 px-4 py-3 text-sm font-semibold transition ${activeTab === 'summary' ? 'bg-blue-600 text-white border-b-4 border-blue-700' : 'text-gray-600 hover:bg-gray-50'}`}>Summary</button>
+                                <button onClick={() => setActiveTab('operational')} className={`flex-1 px-4 py-3 text-sm font-semibold transition ${activeTab === 'operational' ? 'bg-blue-600 text-white border-b-4 border-blue-700' : 'text-gray-600 hover:bg-gray-50'}`}>Operational Reporting</button>
+                                <button onClick={() => setActiveTab('executive')} className={`flex-1 px-4 py-3 text-sm font-semibold transition ${activeTab === 'executive' ? 'bg-blue-600 text-white border-b-4 border-blue-700' : 'text-gray-600 hover:bg-gray-50'}`}>Executive Reporting</button>
+                                <button onClick={() => setActiveTab('supplier')} className={`flex-1 px-4 py-3 text-sm font-semibold transition ${activeTab === 'supplier' ? 'bg-blue-600 text-white border-b-4 border-blue-700' : 'text-gray-600 hover:bg-gray-50'}`}>Supplier Performance</button>
+                            </div>
+                        </div>
+
+                        {/* Summary Tab */}
+                        <div className={`tab-content space-y-6 ${activeTab === 'summary' ? 'active' : ''}`}>
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <KPICard title="Certified Products" value="86%" subtitle="Target: 90% by 2025" color="green" />
+                                <KPICard title="Emissions Reduction" value="22%" subtitle="Target: 30% by 2030" color="green" />
+                                <KPICard title="Safety LTIFR (AU)" value="0.0" subtitle="Zero harm workplace" color="green" />
+                                <KPICard title="Supplier Compliance" value="57%" subtitle="Low risk suppliers" color="orange" />
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div className="bg-white p-6 rounded-lg shadow">
+                                    <h3 className="text-lg font-semibold mb-4 text-blue-800">People & Communities</h3>
+                                    <div className="space-y-3">
+                                        <div className="flex justify-between"><span className="text-sm">Safety (LTIFR)</span><span className="font-semibold text-green-600">✓ On Target</span></div>
+                                        <div className="flex justify-between"><span className="text-sm">Female Managers</span><span className="font-semibold text-orange-600">29% → 34%</span></div>
+                                        <div className="flex justify-between"><span className="text-sm">Community</span><span className="font-semibold text-blue-600">In Development</span></div>
+                                    </div>
+                                </div>
+                                <div className="bg-white p-6 rounded-lg shadow">
+                                    <h3 className="text-lg font-semibold mb-4 text-green-800">Planet & Nature</h3>
+                                    <div className="space-y-3">
+                                        <div className="flex justify-between"><span className="text-sm">Emissions</span><span className="font-semibold text-green-600">22% ✓</span></div>
+                                        <div className="flex justify-between"><span className="text-sm">Waste Recycling</span><span className="font-semibold text-orange-600">35% → 45%</span></div>
+                                        <div className="flex justify-between"><span className="text-sm">Deforestation-Free</span><span className="font-semibold text-green-600">86% ✓</span></div>
+                                    </div>
+                                </div>
+                                <div className="bg-white p-6 rounded-lg shadow">
+                                    <h3 className="text-lg font-semibold mb-4 text-purple-800">Innovation</h3>
+                                    <div className="space-y-3">
+                                        <div className="flex justify-between"><span className="text-sm">Ethical Sourcing</span><span className="font-semibold text-orange-600">Framework Dev</span></div>
+                                        <div className="flex justify-between"><span className="text-sm">Sustainable Products</span><span className="font-semibold text-blue-600">Ecoporium</span></div>
+                                        <div className="flex justify-between"><span className="text-sm">Innovation</span><span className="font-semibold text-green-600">6 in 2025</span></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-white p-6 rounded-lg shadow">
+                                <h3 className="text-xl font-semibold mb-4">2025 Key Milestones</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <h4 className="font-semibold text-green-800 mb-3">✓ Completed / On Track</h4>
+                                        <ul className="text-sm space-y-2">
+                                            <li>• Australia LTIFR at 0.0 - zero harm achieved</li>
+                                            <li>• Emissions reduced 22% vs 2022 baseline</li>
+                                            <li>• 86% FSC/PEFC/Recycled certification</li>
+                                            <li>• First climate disclosures for March 2026</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-semibold text-orange-800 mb-3">⚠ In Progress</h4>
+                                        <ul className="text-sm space-y-2">
+                                            <li>• Female managers: AU 29% / NZ 25%</li>
+                                            <li>• Waste recycling at 35% - tender underway</li>
+                                            <li>• Supplier risk framework in development</li>
+                                            <li>• 3 suppliers with expiring certifications</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Operational Tab */}
+                        <div className={`tab-content space-y-6 ${activeTab === 'operational' ? 'active' : ''}`}>
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <KPICard title="Certified Products" value="86%" subtitle="FSC/PEFC/Recycled" color="green" />
+                                <KPICard title="Target 2025" value="90%" subtitle="On track" color="blue" />
+                                <KPICard title="Total SKUs" value="2,070" subtitle="All categories" color="blue" />
+                                <KPICard title="Deforestation-Free" value="86%" subtitle="Verified" color="green" />
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="bg-white p-6 rounded-lg shadow">
+                                    <h3 className="text-lg font-semibold mb-4">Certification by Volume</h3>
+                                    <ResponsiveContainer width="100%" height={300}>
+                                        <PieChart>
+                                            <Pie data={certificationData} cx="50%" cy="50%" labelLine={false} label={({ name, value }) => `${name}: ${value}%`} outerRadius={80} dataKey="value">
+                                                {certificationData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index]} />)}
+                                            </Pie>
+                                            <Tooltip />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                </div>
+
+                                <div className="bg-white p-6 rounded-lg shadow">
+                                    <h3 className="text-lg font-semibold mb-4">By Category</h3>
+                                    <ResponsiveContainer width="100%" height={300}>
+                                        <BarChart data={categoryBreakdown}>
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="category" angle={-15} textAnchor="end" height={80} />
+                                            <YAxis />
+                                            <Tooltip />
+                                            <Legend />
+                                            <Bar dataKey="FSC" stackId="a" fill="#10b981" />
+                                            <Bar dataKey="PEFC" stackId="a" fill="#3b82f6" />
+                                            <Bar dataKey="Recycled" stackId="a" fill="#f59e0b" />
+                                            <Bar dataKey="Other" stackId="a" fill="#ef4444" />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </div>
+
+                            <div className="bg-white p-6 rounded-lg shadow">
+                                <h3 className="text-lg font-semibold mb-4">Progress to 2030</h3>
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <LineChart data={certificationTrend}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="year" />
+                                        <YAxis domain={[75, 100]} />
+                                        <Tooltip />
+                                        <Legend />
+                                        <Line type="monotone" dataKey="certified" stroke="#10b981" strokeWidth={3} name="Actual %" />
+                                        <Line type="monotone" dataKey="target" stroke="#3b82f6" strokeWidth={2} strokeDasharray="5 5" name="Target %" />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+
+                        {/* Executive Tab */}
+                        <div className={`tab-content space-y-6 ${activeTab === 'executive' ? 'active' : ''}`}>
+                            <div className="bg-white p-6 rounded-lg shadow">
+                                <h3 className="text-xl font-semibold mb-4 text-blue-800">People & Communities</h3>
+                                
+                                <div className="mb-6">
+                                    <h4 className="font-semibold mb-2">1. Safety & Wellbeing</h4>
+                                    <GoalBadge text="Create a zero-harm workplace where our team are physically and mentally safe and well." />
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <KPICard title="AU LTIFR 2024" value="0.0" subtitle="Target: <10" color="green" />
+                                        <KPICard title="NZ LTIFR 2024" value="9.98" subtitle="Target: <10" color="green" />
+                                        <KPICard title="Psychosocial (AU)" value="61.8%" subtitle="Positive" color="orange" />
+                                    </div>
+                                </div>
+
+                                <div className="mb-6">
+                                    <h4 className="font-semibold mb-2">2. Diversity & Inclusion</h4>
+                                    <GoalBadge text="Achieve a more diverse workforce that reflects our communities and embraces diversity and inclusion." />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <p className="text-sm font-medium mb-2">Australia Female Managers</p>
+                                            <div className="flex items-end gap-2">
+                                                <div className="flex-1 bg-gray-200 rounded-full h-8">
+                                                    <div className="bg-blue-600 h-8 rounded-full flex items-center justify-end pr-2" style={{width: '29%'}}>
+                                                        <span className="text-white text-sm font-bold">29%</span>
+                                                    </div>
+                                                </div>
+                                                <span className="text-sm text-gray-600">Target: 34%</span>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-medium mb-2">NZ Female Managers</p>
+                                            <div className="flex items-end gap-2">
+                                                <div className="flex-1 bg-gray-200 rounded-full h-8">
+                                                    <div className="bg-blue-600 h-8 rounded-full flex items-center justify-end pr-2" style={{width: '25%'}}>
+                                                        <span className="text-white text-sm font-bold">25%</span>
+                                                    </div>
+                                                </div>
+                                                <span className="text-sm text-gray-600">Target: 30%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h4 className="font-semibold mb-2">3. Community Support</h4>
+                                    <GoalBadge text="Build relationships with national organisations that meaningfully align with our ESG priorities." />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <KPICard title="National Partnerships" value="TBC" subtitle="Target: 2025" color="blue" />
+                                        <KPICard title="Community Value" value="$0" subtitle="Financial + in-kind" color="blue" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-white p-6 rounded-lg shadow">
+                                <h3 className="text-xl font-semibold mb-4 text-green-800">Planet & Nature</h3>
+                                
+                                <div className="mb-6">
+                                    <h4 className="font-semibold mb-2">4. Climate Action</h4>
+                                    <GoalBadge text="Reduce scope 1 and 2 emissions by 30% by 2030 across Australia and New Zealand operations." />
+                                    <ResponsiveContainer width="100%" height={300}>
+                                        <LineChart data={emissionsData}>
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="year" />
+                                            <YAxis domain={[1400, 2300]} />
+                                            <Tooltip />
+                                            <Legend />
+                                            <Line type="monotone" dataKey="actual" stroke="#10b981" strokeWidth={3} name="Actual" />
+                                            <Line type="monotone" dataKey="target" stroke="#3b82f6" strokeWidth={2} strokeDasharray="5 5" name="Target" />
+                                        </LineChart>
+                                    </ResponsiveContainer>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                                        <KPICard title="2022 Baseline" value="2,200t" color="blue" />
+                                        <KPICard title="Current (2025)" value="1,716t" subtitle="22% reduction" color="green" />
+                                        <KPICard title="2030 Target" value="1,540t" subtitle="30% reduction" color="green" />
+                                    </div>
+                                </div>
+
+                                <div className="mb-6">
+                                    <h4 className="font-semibold mb-2">5. Circular Economy</h4>
+                                    <GoalBadge text="Become a zero-waste business embracing circular economy principals across our operations." />
+                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                        <KPICard title="Current" value="35%" subtitle="Exc. Braeside & NZ" color="orange" />
+                                        <KPICard title="2025" value="45%" color="blue" />
+                                        <KPICard title="2027" value="65%" color="blue" />
+                                        <KPICard title="2030" value="85%" color="green" />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h4 className="font-semibold mb-2">6. Nature Positive</h4>
+                                    <GoalBadge text="Support efforts to end and reverse global deforestation by 2030 through the responsible sourcing of wood-fibre products." />
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <KPICard title="Current Coverage" value="86%" subtitle="FSC/PEFC/Recycled" color="green" />
+                                        <KPICard title="2025 Target" value="90%" color="blue" />
+                                        <KPICard title="2030 Goal" value="95-100%" color="green" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-white p-6 rounded-lg shadow">
+                                <h3 className="text-xl font-semibold mb-4 text-purple-800">Innovation & Collaboration</h3>
+                                
+                                <div className="mb-6">
+                                    <h4 className="font-semibold mb-2">7. Ethical Sourcing</h4>
+                                    <GoalBadge text="Improve and protect human rights and working conditions throughout our supply chain." />
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <KPICard title="Supplier Assessment" value="TBC" subtitle="Framework in dev" color="orange" />
+                                        <KPICard title="Green Rated" value="TBC" subtitle="Target: 70%" color="blue" />
+                                        <KPICard title="Top 20 Suppliers" value="$400M" subtitle="Annual spend" color="blue" />
+                                    </div>
+                                </div>
+
+                                <div className="mb-6">
+                                    <h4 className="font-semibold mb-2">8. Sustainable Products</h4>
+                                    <GoalBadge text="Deliver solutions and expertise that enable our customers to procure more sustainably." />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <KPICard title="Ecoporium Products" value="TBC" subtitle="Sustainable choices" color="green" />
+                                        <KPICard title="Sustainable Criteria" value="In Dev" subtitle="Q4 guidance" color="orange" />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h4 className="font-semibold mb-2">9. Industry Leadership</h4>
+                                    <GoalBadge text="Foster innovative solutions across products, services and technology to create positive change." />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <KPICard title="New Initiatives 2025" value="6" subtitle="Target launches" color="blue" />
+                                        <KPICard title="Innovation Revenue" value="TBC" subtitle="ROI tracking" color="blue" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Supplier Tab */}
+                        <div className={`tab-content space-y-6 ${activeTab === 'supplier' ? 'active' : ''}`}>
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <KPICard title="Total Suppliers" value="7" subtitle="Top tier monitored" color="blue" />
+                                <KPICard title="Low Risk" value="4" subtitle="57%" color="green" />
+                                <KPICard title="Medium Risk" value="2" subtitle="29%" color="orange" />
+                                <KPICard title="High Risk" value="1" subtitle="14%" color="red" />
+                            </div>
+
+                            <div className="bg-white rounded-lg shadow overflow-hidden">
+                                <table className="w-full" style={{borderCollapse: 'collapse'}}>
+                                    <thead style={{backgroundColor: '#f3f4f6'}}>
+                                        <tr>
+                                            <th style={{padding: '12px', textAlign: 'left', fontSize: '0.875rem', fontWeight: '600'}}>Supplier</th>
+                                            <th style={{padding: '12px', textAlign: 'left', fontSize: '0.875rem', fontWeight: '600'}}>Country</th>
+                                            <th style={{padding: '12px', textAlign: 'right', fontSize: '0.875rem', fontWeight: '600'}}>SKUs</th>
+                                            <th style={{padding: '12px', textAlign: 'right', fontSize: '0.875rem', fontWeight: '600'}}>Cert %</th>
+                                            <th style={{padding: '12px', textAlign: 'left', fontSize: '0.875rem', fontWeight: '600'}}>FSC Expiry</th>
+                                            <th style={{padding: '12px', textAlign: 'center', fontSize: '0.875rem', fontWeight: '600'}}>Risk</th>
+                                            <th style={{padding: '12px', textAlign: 'right', fontSize: '0.875rem', fontWeight: '600'}}>Spend</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {supplierData.map((s, i) => (
+                                            <tr key={i} style={{borderTop: '1px solid #e5e7eb'}}>
+                                                <td style={{padding: '12px', fontSize: '0.875rem', fontWeight: '500'}}>{s.supplier}</td>
+                                                <td style={{padding: '12px', fontSize: '0.875rem'}}>{s.country}</td>
+                                                <td style={{padding: '12px', fontSize: '0.875rem', textAlign: 'right'}}>{s.skus}</td>
+                                                <td style={{padding: '12px', fontSize: '0.875rem', textAlign: 'right', fontWeight: '600', color: s.certified >= 95 ? '#16a34a' : s.certified >= 90 ? '#ea580c' : '#dc2626'}}>{s.certified}%</td>
+                                                <td style={{padding: '12px', fontSize: '0.875rem'}}>{s.fscExpiry}</td>
+                                                <td style={{padding: '12px', textAlign: 'center'}}>
+                                                    <span style={{padding: '4px 12px', borderRadius: '12px', fontSize: '0.75rem', fontWeight: '600', backgroundColor: s.risk === 'Low' ? '#d1fae5' : s.risk === 'Medium' ? '#fed7aa' : '#fee2e2', color: s.risk === 'Low' ? '#065f46' : s.risk === 'Medium' ? '#92400e' : '#991b1b'}}>{s.risk}</span>
+                                                </td>
+                                                <td style={{padding: '12px', fontSize: '0.875rem', textAlign: 'right', fontWeight: '500'}}>${s.spend}M</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div className="bg-white p-6 rounded-lg shadow">
+                                <h3 className="text-lg font-semibold mb-4">Action Items</h3>
+                                <div className="space-y-3">
+                                    <div className="flex items-start gap-3 p-3 bg-orange-50 border-l-4 border-orange-500 rounded">
+                                        <div className="flex-1">
+                                            <p className="font-semibold text-sm">3 suppliers with certifications expiring within 6 months</p>
+                                            <p className="text-xs text-gray-600 mt-1">APRIL, Japan Pulp & Paper, Hankuk Paper</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-start gap-3 p-3 bg-red-50 border-l-4 border-red-500 rounded">
+                                        <div className="flex-1">
+                                            <p className="font-semibold text-sm">1 high-risk supplier requiring immediate action</p>
+                                            <p className="text-xs text-gray-600 mt-1">Hankuk Paper - 85% certification rate below target</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<ESGDashboard />, document.getElementById('root'));
+    </script>
+</body>
+</html>
